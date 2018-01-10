@@ -40,6 +40,13 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+#基于django用户登录认证模块，定义可以邮箱，手机登录等方式
+AUTHENTICATION_BACKENDS = (
+    'users.views.CustomBackend',
+)
+
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -51,9 +58,12 @@ INSTALLED_APPS = [
     'courses',
     'organization',
     'operation',
+    #xadmin后台管理
     'xadmin',
     'crispy_forms',
     'reversion',
+    #验证码
+    'captcha',
 ]
 
 # 扩展默认的auth_user表的字段类型
@@ -147,3 +157,15 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+#使用django内置函数发送邮件，配置发送者
+EMAIL_HOST = 'smtp.qq.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = '389098898@qq.com'
+EMAIL_HOST_PASSWORD = 'embklxgffcndcbbj'
+EMAIL_USE_TLS = True
+EMAIL_FROM = '389098898@qq.com'
