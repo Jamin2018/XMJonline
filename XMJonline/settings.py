@@ -64,7 +64,17 @@ INSTALLED_APPS = [
     'reversion',
     #验证码
     'captcha',
+    #分页
+    'pure_pagination',
 ]
+
+#分页
+PAGINATION_SETTINGS = {
+    'PAGE_RANGE_DISPLAYED': 10,
+    'MARGIN_PAGES_DISPLAYED': 2,
+
+    'SHOW_FIRST_PAGE_WHEN_INVALID': True,
+}
 
 # 扩展默认的auth_user表的字段类型
 # 用自定义UserProfile替换auth_user
@@ -96,6 +106,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.core.context_processors.media'   # 前端中全局的使用 {{ MEDIA_URL }}
             ],
         },
     },
@@ -169,3 +180,7 @@ EMAIL_HOST_USER = '389098898@qq.com'
 EMAIL_HOST_PASSWORD = 'embklxgffcndcbbj'
 EMAIL_USE_TLS = True
 EMAIL_FROM = '389098898@qq.com'
+
+#文件上传
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')

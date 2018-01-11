@@ -20,7 +20,11 @@ from django.views.generic import TemplateView
 
 # from users.views import user_login
 from users.views import LoginView,RegisterView,ActiveView,LogoutView,ForgetPwdView,ResetView,ModifyPwdView
+from organization.views import OrgView
 
+#处理静态文件
+from django.views.static import serve
+from XMJonline.settings import MEDIA_ROOT
 
 import xadmin
 urlpatterns = [
@@ -42,5 +46,13 @@ urlpatterns = [
 
     url(r'^forget/$',ForgetPwdView.as_view(),name='forget_pwd'),
 
+    #课程机构url配置
+    url(r'^org/', include('organization.urls',namespace='org')),
+    # #课程机构首页
+    # url(r'^org_list/$',OrgView.as_view(),name='org_list'),
+
+    #处理media信息
+    #配置上传文件的访问处理函数
+    url(r'^media/(?P<path>.*)$', serve, {'document_root':MEDIA_ROOT})
 
 ]
