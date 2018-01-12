@@ -50,7 +50,7 @@ var verify = verifyDialogSubmit(
         cache: false,
         type: 'post',
         dataType:'json',
-        url:"/users/update_email/ ",
+        url:"/users/update_email/",
         data:$('#jsChangeEmailForm').serialize(),
         async: true,
         beforeSend:function(XMLHttpRequest){
@@ -134,7 +134,7 @@ $(function(){
     });
 
     laydate({
-        elem: '#birth_day',
+        elem: '#birthday_day',
         format: 'YYYY-MM-DD',
         max: laydate.now()
     });
@@ -171,7 +171,7 @@ $(function(){
                 if(data.nick_name){
                     _showValidateError($('#nick_name'), data.nick_name);
                 }else if(data.birday){
-                   _showValidateError($('#birth_day'), data.birday);
+                   _showValidateError($('#birthday_day'), data.birthday);
                 }else if(data.address){
                    _showValidateError($('#address'), data.address);
                 }else if(data.status == "failure"){

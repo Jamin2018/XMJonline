@@ -1,4 +1,4 @@
-$(function() {
+
 	/*index*/
 	$('.module3 .company').hover(function(){
 		$(this).find('.score').stop(true,true).fadeToggle(200);
