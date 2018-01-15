@@ -1,6 +1,8 @@
 import json
 
-from django.shortcuts import render,HttpResponse
+from django.shortcuts import render,HttpResponse,redirect,HttpResponseRedirect
+
+from django.core.urlresolvers import reverse
 
 from django.contrib.auth import authenticate,login,logout  #django自带认证模块
 
@@ -32,7 +34,29 @@ from courses.models import Course
 from django.shortcuts import render_to_response
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 
+from .models import Banner
 
+
+
+class IndexView(View):
+    '''
+    首页
+    '''
+    def get(self,request):
+        # 取轮播图
+        all_banners = Banner.objects.all().order_by('index')
+        # 非广告位课程
+        courses = Course.objects.all().filter(is_banner=False)[:6]
+        # 广告位课程
+        banner_courses = Course.objects.all().filter(is_banner=True)[:3]
+        # 机构数量
+        course_orgs = CourseOrg.objects.all()[:15]
+        return render(request,'index.html',{
+            'all_banners':all_banners,
+            'courses':courses,
+            'banner_courses':banner_courses,
+            'course_orgs':course_orgs,
+        })
 
 
 
@@ -50,9 +74,14 @@ class CustomBackend(ModelBackend):
 
 
 class LogoutView(View):
+    '''
+    用户登出
+    '''
     def get(self,request):
         logout(request)
-        return render(request,'index.html')
+        # return render(request,'index.html')  #不能这么做，要重定向，为什么一定要重定向？
+        from django.core.urlresolvers import reverse
+        return HttpResponseRedirect(reverse('index'))
 
 
 class LoginView(View):
@@ -68,7 +97,7 @@ class LoginView(View):
                 # print('用户存在')
                 if user.is_active:
                     login(request, user)
-                    return render(request, 'index.html')
+                    return HttpResponseRedirect(reverse('index'))
                 else:
                     return render(request, 'login.html', {'msg': '该邮箱未激活!'})
             else:
@@ -352,6 +381,12 @@ class MyMessageView(LoginRequiredMixin,View):
     def get(self,request):
         all_messages = UserMessage.objects.filter(user=request.user.id)
 
+        #清空未读信息的标记改为已读消息
+        all_unread_messages = UserMessage.objects.filter(has_read=False,user=request.user.id)
+        for unread_message in all_unread_messages:
+            unread_message.has_read = True
+            unread_message.save()
+
         # 分页
         try:
             page = request.GET.get('page', 1)
@@ -364,3 +399,25 @@ class MyMessageView(LoginRequiredMixin,View):
         return render(request,'usercenter-message.html',{
             'all_messages':messages,
         })
+
+
+def page_not_found(request):
+    '''
+    全局处理404页面
+
+    '''
+    from django.shortcuts import render_to_response
+    response = render_to_response('404.html',{})
+    response.status_code = 404
+    return response
+
+
+def page_error(request):
+    '''
+    全局处理500页面
+
+    '''
+    from django.shortcuts import render_to_response
+    response = render_to_response('500.html',{})
+    response.status_code = 500
+    return response

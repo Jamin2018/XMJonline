@@ -4,6 +4,15 @@ from xadmin import views
 
 from .models import EmailVerifyRecord,Banner
 
+# xadmin进阶配置,最新的已经不需要了
+# from xadmin.plugins.auth import UserAdmin
+# from .models import UserProfile
+#
+# class UserProfileAdmin(UserAdmin):
+#     pass
+#
+# xadmin.site.register(UserProfile,UserProfileAdmin)
+
 #全局设置
 class GlobalSettings(object):
     site_title = 'XMJsystem'    #Logo
@@ -24,6 +33,9 @@ class EmailVerifyRecordAdmin(object):
     search_fields = ['code', 'email', "send_type"]
     #筛选(后台管理页面中的过滤器)
     list_filter = ['email', "send_type",'send_time']
+
+    # 自定义后台系统的icon
+    model_icon = 'fa fa-envelope-square'
 
 class BannerAdmin(object):
     list_display = ['title', 'image', "url",'index','add_time']

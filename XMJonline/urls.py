@@ -24,14 +24,16 @@ from organization.views import OrgView
 
 #处理静态文件
 from django.views.static import serve
-from XMJonline.settings import MEDIA_ROOT
+from XMJonline.settings import MEDIA_ROOT   # STATIC_ROOT
+
+from users.views import IndexView
 
 import xadmin
 urlpatterns = [
     # url(r'^admin/', admin.site.urls),
     url(r'^xadmin/', xadmin.site.urls),
 
-    url('^$',TemplateView.as_view(template_name='index.html'),name='index'), #处理静态文件？什么意思  这里的功能好像是不需要写视图函数，直接将index.html文件传到浏览器
+    url('^$',IndexView.as_view(),name='index'), #处理静态文件？什么意思  这里的功能好像是不需要写视图函数，直接将index.html文件传到浏览器
 
     url('^login/$',LoginView.as_view(),name='login'),
     url('^logout/$',LogoutView.as_view(),name='logout'),
@@ -60,6 +62,17 @@ urlpatterns = [
 
     #处理media信息
     #配置上传文件的访问处理函数
-    url(r'^media/(?P<path>.*)$', serve, {'document_root':MEDIA_ROOT})
+    url(r'^media/(?P<path>.*)$', serve, {'document_root':MEDIA_ROOT}),
+
+    # #项目上线后，需要自己配置static静态文件路径
+    # url(r'^static/(?P<path>.*)$', serve, {'document_root':STATIC_ROOT}),
+
+    # # 富文本相关url
+    # url(r'^ueditor/', include('DjangoUeditor.utils')),
 
 ]
+
+# 全局404,500配置
+handler404 = 'users.views.page_not_found'
+handler500 = 'users.views.page_error'
+

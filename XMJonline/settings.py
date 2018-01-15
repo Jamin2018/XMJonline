@@ -33,9 +33,17 @@ sys.path.insert(0,os.path.join(BASE_DIR,'extra_apps'))
 SECRET_KEY = '@=*9xh*8ur)*4xlmqh-megma=p48ejr%#%cvi1+s5mt!0^4v!o'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+#
+# # 项目上线，生产模式设置False
+# DEBUG = False
+#
+# ALLOWED_HOSTS = ['*']
+
+# 项目没上线
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
 
 
 # Application definition
@@ -66,6 +74,8 @@ INSTALLED_APPS = [
     'captcha',
     #分页
     'pure_pagination',
+    #富文本编辑
+    'DjangoUeditor'
 ]
 
 #分页
@@ -184,3 +194,6 @@ EMAIL_FROM = '389098898@qq.com'
 #文件上传
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+
+# #项目上线后，static路径需要重新配置
+# STATIC_ROOT = os.path.join(BASE_DIR,'static')

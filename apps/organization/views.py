@@ -96,6 +96,9 @@ class OrgHomeView(View):
     def get(self, request, org_id):
         current_page = 'home'
         course_org = CourseOrg.objects.get(id=int(org_id))
+        #点击数加一
+        course_org.click_nums +=1
+        course_org.save()
         #判断是否收藏
         has_fav = False
         if request.user.is_authenticated():
@@ -191,14 +194,28 @@ class AddFavView(View):
             #若已经存在，则去掉记录
             exit_records.delete()
             #机构收藏数减1
+            if int(fav_type) == 3:
+                teacher_nums = Teacher.objects.get(id=int(fav_id))
+                teacher_nums.fav_nums -=1
+                # 避免负数
+                if teacher_nums.fav_nums < 0:
+                    teacher_nums.fav_nums = 0
+                teacher_nums.save()
+
             if int(fav_type) == 2:
                 org_nums = CourseOrg.objects.get(id=int(fav_id))
                 org_nums.fav_nums -=1
+                # 避免负数
+                if org_nums.fav_nums < 0:
+                    org_nums.fav_nums = 0
                 org_nums.save()
 
             if int(fav_type) == 1:
                 course_nums = Course.objects.get(id=int(fav_id))
                 course_nums.fav_nums -=1
+                # 避免负数
+                if course_nums.fav_nums < 0:
+                    course_nums.fav_nums = 0
                 course_nums.save()
 
             return HttpResponse('{"status":"success","msg":"收藏"}', content_type='application/json')
@@ -208,6 +225,11 @@ class AddFavView(View):
                                                        fav_id=int(fav_id),
                                                        fav_type=int(fav_type))
                 # 机构收藏数加1
+                if int(fav_type) == 3:
+                    teacher_nums = Teacher.objects.get(id=int(fav_id))
+                    teacher_nums.fav_nums += 1
+                    teacher_nums.save()
+
                 if int(fav_type) == 2:
                     org_nums = CourseOrg.objects.get(id=int(fav_id))
                     org_nums.fav_nums += 1
@@ -264,6 +286,10 @@ class TeacherListView(View):
 class TeacherDetailView(View):
     def get(self,request,teacher_id):
         teacher = Teacher.objects.get(id=teacher_id)
+        #点击数加一
+        teacher.click_nums +=1
+        teacher.save()
+
         all_courses = teacher.course_set.all()
         sorted_teachers = Teacher.objects.all().order_by('-click_nums')[:3]
 
